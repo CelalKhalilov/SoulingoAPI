@@ -1,0 +1,242 @@
+# Soulingo API
+
+A comprehensive language learning platform API built with Rails 8.0 and SQLite3.
+
+Soulingo API provides a complete backend solution for language learning applications, featuring user management, lesson organization, multimedia content, vocabulary tracking, quizzes, and progress monitoring.
+
+Based on the Rails API Base template, it follows community best practices in terms of standards, security and maintainability.
+
+## Features
+
+### Core Functionality
+- **User Management**
+  - User registration and authentication (JWT tokens via DeviseTokenAuth)
+  - User profiles with display names and language levels (A1-C2)
+  - Password reset functionality
+
+- **Lesson Management**
+  - Create, read, update, delete lessons
+  - Filter lessons by CEFR level (A1, A2, B1, B2, C1, C2)
+  - Support for multiple lesson types (Video, Text, Mixed)
+
+- **Media Resources**
+  - Upload and manage multimedia content
+  - Support for Video, Image, Audio, and Document types
+  - Associate media with lessons
+
+- **Vocabulary System**
+  - Add vocabulary items to lessons
+  - Include word meanings, example sentences, and parts of speech
+  - Organize vocabulary by lesson
+
+- **Quiz System**
+  - Create multiple-choice quizzes for lessons
+  - Submit and validate quiz answers
+  - Track correct/incorrect responses
+
+- **Progress Tracking**
+  - Monitor user progress per lesson
+  - Track completion percentage
+  - Calculate quiz scores
+  - View learning statistics
+
+### Technical Features
+- SQLite3 database (lightweight and portable)
+- RESTful API design
+- JSON responses with Jbuilder
+- Pundit authorization
+- Administration panel (ActiveAdmin)
+- Feature flags support
+- Code quality tools (RuboCop, Brakeman)
+- RSpec tests
+- API documentation (OpenAPI/Swagger)
+- Docker support
+
+## Quick Start
+
+### Prerequisites
+- Ruby 3.4+
+- SQLite3
+- Node.js (version specified in `.nvmrc`)
+- Yarn
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd SoulingoApi.0.1
+   ```
+
+2. **Install dependencies**
+   ```bash
+   bundle install
+   yarn install
+   ```
+
+3. **Create storage directory**
+   ```bash
+   mkdir -p storage
+   ```
+
+4. **Setup database**
+   ```bash
+   rails db:create
+   rails db:migrate
+   rails db:seed  # Optional: loads sample data
+   ```
+
+5. **Start the server**
+   ```bash
+   rails server
+   ```
+
+6. **Access the API**
+   - API Base URL: `http://localhost:3000/api/v1`
+   - Admin Panel: `http://localhost:3000/admin`
+   - API Docs: `http://localhost:3000/api-docs`
+
+For detailed setup instructions, see [SETUP.md](SETUP.md).
+
+For complete API documentation, see [SOULINGO_API.md](SOULINGO_API.md).
+
+## How to use with Docker
+
+1. Have `docker` and `docker-compose` installed (You can check this by doing `docker -v` and `docker-compose -v`)
+1. Run `bootstrap.sh` with the name of your project and the `-d` or `--for-docker` flag like `./bin/bootstrap.sh --name=my_awesome_project -d`
+    1. Run `./bin/bootstrap.sh --help` for the full details.
+1. (Optional) If you want to deny access to the database from outside of the `docker-compose` network, remove the `ports` key in the `docker-compose.yml` from the `db` service.
+1. (Optional) Run the tests to make sure everything is working with: `bin/rspec .`.
+1. You can now try your REST services!
+
+See [Docker docs](./docs/docker.md) for more info
+
+## Dev scripts
+
+This template provides a handful of scripts to make your dev experience better!
+
+- bin/bundle to run any `bundle` commands.
+  - `bin/bundle install`
+- bin/rails to run any `rails` commands
+  - `bin/rails console`
+- bin/web to run any `bash` commands
+  - `bin/web ls`
+- bin/rspec to run specs
+  - `bin/rspec .`
+- bin/dev to run both Rails and JS build processes at the same time in a single terminal tab.
+  - `bin/dev`
+
+You don't have to use these but they are designed to run the same when running with Docker or not.
+To illustrate, `bin/rails console` will run the console in the docker container when running with docker and locally when not.
+
+## Gems
+
+- [ActiveAdmin](https://github.com/activeadmin/activeadmin) for easy administration
+- [Arctic Admin](https://github.com/cprodhomme/arctic_admin) for responsive active admin
+- [Annotaterb](https://github.com/drwl/annotaterb) for documenting the schema in the classes
+- [Better Errors](https://github.com/charliesome/better_errors) for a better error page
+- [Brakeman](https://github.com/presidentbeef/brakeman) for security static analysis
+- [Byebug](https://github.com/deivid-rodriguez/byebug) for debugging
+- [Devise](https://github.com/plataformatec/devise) for basic authentication
+- [Devise Token Auth](https://github.com/lynndylanhurley/devise_token_auth) for API authentication
+- [Dotenv](https://github.com/bkeepers/dotenv) for handling environment variables
+- [Draper](https://github.com/drapergem/draper) for decorators
+- [Factory Bot](https://github.com/thoughtbot/factory_bot) for testing data
+- [Faker](https://github.com/stympy/faker) for generating test data
+- [Flipper](https://github.com/jnunemaker/flipper) for feature flag support
+- [GoodJob](https://github.com/bensheldon/good_job) for background processing
+- [Jbuilder](https://github.com/rails/jbuilder) for JSON views
+- [JS Bundling](https://github.com/rails/jsbundling-rails) for bundling JS assets
+- [Knapsack](https://github.com/KnapsackPro/knapsack) for splitting tests evenly based on execution time
+- [Letter Opener](https://github.com/ryanb/letter_opener) for previewing emails in the browser
+- [New Relic](https://github.com/newrelic/newrelic-ruby-agent) for monitoring and debugging
+- [Pagy](https://github.com/ddnexus/pagy) for pagination
+- [Parallel Tests](https://github.com/grosser/parallel_tests) for running the tests in multiple cores
+- [Prosopite](https://github.com/charkost/prosopite) to detect N+1 queries
+- [Pry](https://github.com/pry/pry) for enhancing the Ruby shell
+- [Puma](https://github.com/puma/puma) for the web server
+- [Pundit](https://github.com/varvet/pundit) for authorization management
+- [Rack CORS](https://github.com/cyu/rack-cors) for handling CORS
+- [Rails Best Practices](https://github.com/flyerhzm/rails_best_practices) for Rails linting
+- [Reek](https://github.com/troessner/reek) for Ruby linting
+- [RSpec](https://github.com/rspec/rspec) for testing
+- [RSpec OpenAPI](https://github.com/exoego/rspec-openapi) for generating API documentation
+- [Rswag](https://github.com/rswag/rswag) for serving the API documentation
+- [Rubocop](https://github.com/bbatsov/rubocop/) for Ruby linting
+- [Sendgrid](https://github.com/stephenb/sendgrid) for sending emails
+- [Shoulda Matchers](https://github.com/thoughtbot/shoulda-matchers) for other testing matchers
+- [Simplecov](https://github.com/colszowka/simplecov) for code coverage
+- [Strong Migrations](https://github.com/ankane/strong_migrations) for catching unsafe migrations in development
+- [Webmock](https://github.com/bblimke/webmock) for stubbing http requests
+- [YAAF](https://github.com/rootstrap/yaaf) for form objects
+
+## Optional configuration
+
+- Set your [frontend URL](https://github.com/cyu/rack-cors#origin) in `config/initializers/rack_cors.rb`
+- Set your mail sender in `config/initializers/devise.rb`
+- Config your timezone accordingly in `application.rb`
+- Config CI parallel execution. See [docs](docs/ci.md)
+- Fullstack development. See [docs](docs/fullstack.md).
+
+## API Docs
+
+- [RSpec API Doc Generator](https://github.com/exoego/rspec-openapi) you can generate the docs after writing requests specs
+- [Rswag](https://github.com/rswag/rswag) you can expose the generated docs
+
+See [API documentation docs](./docs/api_documentation.md) for more info
+
+## Code quality
+
+With `bundle exec rails code:analysis` you can run the code analysis tool, you can omit rules with:
+
+- [Rubocop](https://github.com/bbatsov/rubocop/blob/master/config/default.yml) Edit `.rubocop.yml`
+- [Reek](https://github.com/troessner/reek#configuration-file) Edit `config.reek`
+- [Rails Best Practices](https://github.com/flyerhzm/rails_best_practices#custom-configuration) Edit `config/rails_best_practices.yml`
+- [Brakeman](https://github.com/presidentbeef/brakeman) Run `brakeman -I` to generate `config/brakeman.ignore`
+
+## Code quality and test coverage
+
+The project uses SonarQube Community Edition to ensure code quality and monitor test coverage. The configuration can be found in `sonar-project.properties`.
+
+To set up SonarQube:
+
+1. Install SonarQube locally (see [CI documentation](docs/ci.md#setting-up-sonarqube) for details)
+2. Configure your environment variables:
+   ```bash
+   export SONAR_TOKEN=your_token
+   export SONAR_HOST_URL=http://localhost:9000
+   ```
+3. Run the analysis:
+   ```bash
+   bundle exec rspec
+   sonar-scanner
+   ```
+
+For more details about the CI process and SonarQube setup, check the [CI documentation](docs/ci.md).
+
+## More linters
+- [Hadolint](https://github.com/hadolint/hadolint) Install with `brew install hadolint` and run `hadolint Dockerfile*`. Edit `.hadolint.yml` to omit additional rules.
+
+## Impersonation
+
+The `rails_api_base` incorporates a user impersonation feature, allowing `AdminUser`s to assume the identity of other `User`s. This feature is disabled by default.
+
+See [Impersonation docs](./docs/impersonation.md) for more info
+
+## Monitoring
+
+In order to use [New Relic](https://newrelic.com) to monitor your application requests and metrics, you must setup `NEW_RELIC_API_KEY` and `NEW_RELIC_APP_NAME` environment variables.
+To obtain an API key you must create an account in the platform.
+
+## Code Owners
+
+You can use [CODEOWNERS](https://help.github.com/en/articles/about-code-owners) file to define individuals or teams that are responsible for code in the repository.
+
+Code owners are automatically requested for review when someone opens a pull request that modifies code that they own.
+
+## Credits
+
+Rails API Base is maintained by [Rootstrap](http://www.rootstrap.com) with the help of our
+[contributors](https://github.com/rootstrap/rails_api_base/contributors).
+
+[<img src="https://s3-us-west-1.amazonaws.com/rootstrap.com/img/rs.png" width="100"/>](http://www.rootstrap.com)

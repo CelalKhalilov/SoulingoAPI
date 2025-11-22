@@ -1,0 +1,21 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: <%= ENV.fetch("DB_HOST", "localhost") %>
+  port: <%= ENV.fetch("DB_PORT", "5432") %>
+  username: <%= ENV.fetch("DB_USER", "postgres") %>
+  password: <%= ENV.fetch("DB_PASSWORD", "") %>
+  template: template0
+
+development:
+  <<: *default
+  database: <%= ENV.fetch("DB_NAME", "deneme") %>
+
+test:
+  <<: *default
+  database: soulingo_test
+
+production:
+  <<: *default
+  database: <%= ENV.fetch("DB_NAME", "soulingo_production") %>

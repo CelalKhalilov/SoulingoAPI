@@ -1,0 +1,421 @@
+openapi: 3.0.3
+info:
+  title: Soulingo API
+  description: Language Learning Platform API - Simple version without authentication
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Development server
+
+tags:
+  - name: Authentication
+    description: User registration and login (no tokens required)
+  - name: Lessons
+    description: Language learning lessons
+  - name: Media
+    description: Media resources (videos, images, audio)
+  - name: Vocabulary
+    description: Vocabulary items and words
+  - name: Quiz
+    description: Quizzes and assessments
+  - name: Progress
+    description: User learning progress tracking
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+          format: email
+        display_name:
+          type: string
+        level:
+          type: string
+          enum: [A1, A2, B1, B2, C1, C2]
+        created_at:
+          type: string
+          format: date-time
+
+    Lesson:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        level:
+          type: string
+          enum: [A1, A2, B1, B2, C1, C2]
+        lesson_type:
+          type: string
+          enum: [Video, Text, Mixed]
+        created_at:
+          type: string
+          format: date-time
+
+    MediaResource:
+      type: object
+      properties:
+        id:
+          type: integer
+        url:
+          type: string
+        media_type:
+          type: string
+          enum: [Video, Image, Audio, Document]
+        mime_type:
+          type: string
+        lesson_id:
+          type: integer
+
+    VocabularyItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        word:
+          type: string
+        meaning:
+          type: string
+        example_sentence:
+          type: string
+        part_of_speech:
+          type: string
+        lesson_id:
+          type: integer
+
+    Quiz:
+      type: object
+      properties:
+        id:
+          type: integer
+        question:
+          type: string
+        options:
+          type: array
+          items:
+            type: string
+        correct_index:
+          type: integer
+        lesson_id:
+          type: integer
+
+    UserProgress:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        lesson_id:
+          type: integer
+        completion_percent:
+          type: integer
+        correct_answers:
+          type: integer
+        total_questions:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+
+paths:
+  /api/v1/auth:
+    post:
+      tags:
+        - Authentication
+      summary: User Registration
+      description: Register a new user account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - password_confirmation
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                password_confirmation:
+                  type: string
+                display_name:
+                  type: string
+                level:
+                  type: string
+                  enum: [A1, A2, B1, B2, C1, C2]
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/auth/sign_in:
+    post:
+      tags:
+        - Authentication
+      summary: User Login
+      description: Sign in with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+        '401':
+          description: Invalid credentials
+
+  /api/v1/auth/sign_out:
+    delete:
+      tags:
+        - Authentication
+      summary: User Logout
+      responses:
+        '200':
+          description: Logout successful
+
+  /api/v1/lessons:
+    get:
+      tags:
+        - Lessons
+      summary: List all lessons
+      parameters:
+        - name: level
+          in: query
+          schema:
+            type: string
+            enum: [A1, A2, B1, B2, C1, C2]
+      responses:
+        '200':
+          description: List of lessons
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Lesson'
+    post:
+      tags:
+        - Lessons
+      summary: Create a new lesson
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - lesson
+              properties:
+                lesson:
+                  type: object
+                  required:
+                    - title
+                    - level
+                    - lesson_type
+                  properties:
+                    title:
+                      type: string
+                    description:
+                      type: string
+                    level:
+                      type: string
+                      enum: [A1, A2, B1, B2, C1, C2]
+                    lesson_type:
+                      type: string
+                      enum: [Video, Text, Mixed]
+      responses:
+        '201':
+          description: Lesson created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lesson'
+
+  /api/v1/lessons/{id}:
+    get:
+      tags:
+        - Lessons
+      summary: Get lesson details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lesson details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lesson'
+
+  /api/v1/lessons/{lesson_id}/media:
+    get:
+      tags:
+        - Media
+      summary: Get lesson media
+      parameters:
+        - name: lesson_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of media resources
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MediaResource'
+
+  /api/v1/lessons/{lesson_id}/vocabulary:
+    get:
+      tags:
+        - Vocabulary
+      summary: Get lesson vocabulary
+      parameters:
+        - name: lesson_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of vocabulary items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VocabularyItem'
+
+  /api/v1/lessons/{lesson_id}/quizzes:
+    get:
+      tags:
+        - Quiz
+      summary: Get lesson quizzes
+      parameters:
+        - name: lesson_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of quizzes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Quiz'
+
+  /api/v1/quizzes/{id}/submit:
+    post:
+      tags:
+        - Quiz
+      summary: Submit quiz answer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - answer_index
+              properties:
+                answer_index:
+                  type: integer
+      responses:
+        '200':
+          description: Answer result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  correct:
+                    type: boolean
+                  correct_index:
+                    type: integer
+                  message:
+                    type: string
+
+  /api/v1/progress/user/{user_id}:
+    get:
+      tags:
+        - Progress
+      summary: Get user progress
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User progress
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserProgress'
+
